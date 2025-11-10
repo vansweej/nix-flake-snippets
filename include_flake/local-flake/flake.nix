@@ -3,7 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    github-flake.url = "path:../github-flake";
+    github-flake.url = "github:vansweej/nix-flake-snippets?dir=include_flake/github-flake";
   };
 
   outputs = { self, nixpkgs, github-flake, ... }:
