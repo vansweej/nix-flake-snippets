@@ -9,12 +9,26 @@
   outputs = { self, nixpkgs, github-flake, ... }:
     let
       system = "x86_64-linux";
-      pkgs = import nixpkgs { inherit system; };
+      pkgs = import nixpkgs { inherit system; }; 
     in {
       packages.${system}.default = pkgs.writeTextFile {
         name = "example-output";
         text = github-flake.lib.greet "Nix User";
       };
+
+      # Expose the greet app from github-flake
+      apps.${system}.greet = github-flake.apps.${system}.greet;
+
+      # Or create a default app that runs the greet app
+      apps.${system}.default = github-flake.apps.${system}.greet;
+
+      # Alternative: Wrap the app with custom behavior
+      apps.${system}.greet-custom = {
+        type = "app";
+        program = "${pkgs.writeShellScript "greet-wrapper" ''
+          echo "Running greet app from github-flake:"
+          ${github-flake.apps.${system}.greet.program} "Local Flake User"
+        ''}";
+      };
     };
 }
-
